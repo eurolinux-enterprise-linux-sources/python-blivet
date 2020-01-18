@@ -26,6 +26,7 @@ from decimal import Decimal
 import os
 import shlex
 import tempfile
+import uuid as uuid_mod
 
 from . import fslabeling
 from ..errors import FormatCreateError, FSError, FSResizeError
@@ -764,8 +765,7 @@ class FS(DeviceFormat):
         self.notifyKernel()
 
     def _getRandomUUID(self):
-        uuid = util.capture_output(["uuidgen"]).strip()
-        return uuid
+        return str(uuid_mod.uuid4())
 
     @property
     def needsFSCheck(self):
@@ -1349,6 +1349,28 @@ class XFS(FS):
             util.run_program(["xfs_freeze", "-u", self.mountpoint], root=root)
         except OSError as e:
             log.error("failed to run xfs_freeze: %s", e)
+
+    def regenerate_uuid(self, root='/'):
+        """ Generate a new UUID for the *existing* file system
+
+            *The file system cannot be mounted.*
+
+        """
+        if not self.exists:
+            raise FSError("Cannot regenerate UUID for a non-existing XFS file system")
+
+        if self.status:
+            raise FSError("Cannot regenerate UUID for a mounted XFS file system")
+
+        # mount and umount the FS to make sure it is clean
+        tmpdir = tempfile.mkdtemp(prefix="xfs-tmp")
+        self.mount(mountpoint=tmpdir, options="nouuid")
+        self.unmount()
+        os.rmdir(tmpdir)
+
+        new_uuid = self._getRandomUUID()
+        util.run_program(["xfs_admin", "-U", new_uuid, self.device], root=root)
+        self.uuid = new_uuid
 
 register_device_format(XFS)
 

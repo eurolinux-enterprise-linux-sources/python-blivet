@@ -563,9 +563,6 @@ class LVMDeviceTest(unittest.TestCase):
         with self.assertRaisesRegexp(ValueError, "lvm snapshot devices require an origin lv"):
             LVMSnapShotDevice("snap1", parents=[vg])
 
-        with self.assertRaisesRegexp(ValueError, "lvm snapshot origin volume must already exist"):
-            LVMSnapShotDevice("snap1", parents=[vg], origin=lv)
-
         with self.assertRaisesRegexp(ValueError, "lvm snapshot origin must be a logical volume"):
             LVMSnapShotDevice("snap1", parents=[vg], origin=pv)
 
@@ -597,9 +594,6 @@ class LVMDeviceTest(unittest.TestCase):
 
         with self.assertRaisesRegexp(ValueError, "lvm thin snapshots require an origin"):
             LVMThinSnapShotDevice("snap1", parents=[pool])
-
-        with self.assertRaisesRegexp(ValueError, "lvm snapshot origin volume must already exist"):
-            LVMThinSnapShotDevice("snap1", parents=[pool], origin=thinlv)
 
         with self.assertRaisesRegexp(ValueError, "lvm snapshot origin must be a logical volume"):
             LVMThinSnapShotDevice("snap1", parents=[pool], origin=pv)
@@ -874,7 +868,40 @@ class NetDevMountOptionTestCase(unittest.TestCase):
 
         self.assertTrue("_netdev" in dev.format.options.split(","))
 
+class MDRaidArrayDeviceTest(unittest.TestCase):
+
+    def test_chunkSize1(self):
+
+        member1 = StorageDevice("member1", fmt=blivet.formats.getFormat("mdmember"),
+                                size=Size("1 GiB"))
+        member2 = StorageDevice("member2", fmt=blivet.formats.getFormat("mdmember"),
+                                size=Size("1 GiB"))
+
+        raid_array = MDRaidArrayDevice(name="raid", level="raid0", memberDevices=2,
+                                       totalDevices=2, parents=[member1, member2])
+
+        # no chunkSize specified -- default value
+        self.assertEqual(raid_array.chunkSize, mdraid.MD_CHUNK_SIZE)
+
+    def test_chunkSize2(self):
+
+        member1 = StorageDevice("member1", fmt=blivet.formats.getFormat("mdmember"),
+                                size=Size("1 GiB"))
+        member2 = StorageDevice("member2", fmt=blivet.formats.getFormat("mdmember"),
+                                size=Size("1 GiB"))
+
+        raid_array = MDRaidArrayDevice(name="raid", level="raid0", memberDevices=2,
+                                       totalDevices=2, parents=[member1, member2],
+                                       chunkSize=Size("1024 KiB"))
+
+        self.assertEqual(raid_array.chunkSize, Size("1024 KiB"))
+
+        with self.assertRaisesRegexp(ValueError, "new chunk size must be of type Size"):
+            raid_array.chunkSize = 1
+
+        with self.assertRaisesRegexp(ValueError, "new chunk size must be multiple of 4 KiB"):
+            raid_array.chunkSize = Size("5 KiB")
+
 
 if __name__ == "__main__":
     unittest.main()
-

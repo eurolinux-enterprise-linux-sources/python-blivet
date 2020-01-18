@@ -1,3 +1,539 @@
+commit e8df8b48b137cbcb596b21c956b7e053c83e682c
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 28 09:52:38 2017 -0400
+
+    New version: 0.61.15.65
+
+commit 9e57aaeaaa8ee7d851bfb69ca9ee54a5eec43aa2
+Merge: 182d262 e8c4c00
+Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
+Date:   Wed Jun 28 15:46:44 2017 +0200
+
+    Merge pull request #610 from vpodzime/rhel7-percent_thpool_fixes
+    
+    Percent-based thpool fixes
+
+commit e8c4c006b93ab25f17acd036c165d48c97000a85
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed Jun 21 10:27:16 2017 +0200
+
+    Autoset metadata size on percent-based thin pools
+    
+    Once we calculate their real size, we need to make sure their
+    metadata size is set properly (unless explicitly specified, of
+    course).
+    
+    Resolves: rhbz#1463198
+
+commit 058be8514c107292b8407c9a0c963f5488639314
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed Jun 21 10:25:56 2017 +0200
+
+    Do not try to autoset MD size on a thin pool with no size
+    
+    If a thin pool device doesn't have its size specified (yet),
+    there's no way to calculate the recommended MD size for it.
+    
+    Related: rhbz#1463198
+
+commit 182d2629595bb961208fb3b00852d8a37aa435cb
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 7 10:44:24 2017 -0400
+
+    New version: 0.61.15.64
+
+commit 2c82c923a518afa767948ce2daad375c46653131
+Merge: a921ef1 062360c
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 7 10:31:49 2017 -0400
+
+    Merge pull request #599 from vpodzime/rhel7-round_thpool_mdsize
+    
+    Round the recommended thpool metadata size to extents
+
+commit a921ef1ba3a492861068a96e0e2206244f72d5f1
+Merge: c240820 237e4a3
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 7 10:21:04 2017 -0400
+
+    Merge pull request #602 from vpodzime/rhel7-lvremove_deactivate
+    
+    Make sure an LV is deactivated before removal
+
+commit 237e4a3c592dc02d7264d39c526705378a6c4529
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon Jun 5 15:17:25 2017 +0200
+
+    Make sure an LV is deactivated before removal
+    
+    Before and LV is removed, we may need to set its ancestors (VG
+    and its PVs) up which may trigger auto-activation of the LV
+    itself. And since we are supposed to always remove a deactivated
+    LV so we have to make sure the LV is deactivated before we try to
+    remove it.
+    
+    Resolves: rhbz#1456821
+
+commit c240820a0b3345a30b96726d648f313edda05e8f
+Merge: d26f5ce 0272660
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 7 09:49:28 2017 -0400
+
+    Merge pull request #603 from dwlehman/setup-before-format-create-1368986
+    
+    Setup device before format create
+
+commit 0272660a5e569465ed89a6292358229848ae94a9
+Author: Brian C. Lane <bcl@redhat.com>
+Date:   Mon Mar 9 17:20:14 2015 -0700
+
+    Make sure the device is setup before formatting it (#1368986)
+    
+    Reusing an existing LV wasn't working because it was not setup before
+    formatting.
+    
+    (cherry picked from commit 1834001a731a11ce42186bffc84a54d02d4f1df4)
+
+commit 062360ce6498ee33b62a7ee6833e681d274522b4
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Fri Jun 2 08:58:17 2017 +0200
+
+    Round the recommended thpool metadata size to extents
+    
+    Otherwise LVM does it when creating the thin pool and we may end
+    up with not enough space in the VG to create the data part of the
+    pool (which happens afterwards).
+    
+    Resolves: rhbz#1456528
+
+commit d26f5ce6aa5433418abbcaf9d1433df475297215
+Author: David Lehman <dlehman@redhat.com>
+Date:   Tue May 16 15:43:48 2017 -0400
+
+    New version: 0.61.15.63
+
+commit ef387064e70d75d4ef1d1659e9e138717bd4b6b6
+Merge: 43852fa 7335c86
+Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
+Date:   Mon May 15 16:13:27 2017 +0200
+
+    Merge pull request #589 from vpodzime/rhel7-no_uuidgen
+    
+    Use the uuid module instead of the uuidgen tool
+
+commit 43852fa843962d69722e7c480d20bd582b2347c8
+Merge: ff1061b ba2ac50
+Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
+Date:   Mon May 15 16:13:18 2017 +0200
+
+    Merge pull request #582 from vpodzime/rhel7-thpool_min_size
+    
+    Respect thin pool's min size when setting its req_size
+
+commit 7335c8631c959397b056c41d19545585f687966e
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon May 15 11:12:03 2017 +0200
+
+    Use the uuid module instead of the uuidgen tool
+    
+    The uuid module is shipped together with Python so we should use
+    it instead of requiring an extra utility.
+    
+    Related: rhbz#1413942
+
+commit ba2ac50d8ea508fda639f207da87242d59e54a10
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed May 3 15:54:33 2017 +0200
+
+    Respect thin pool's min size when setting its req_size
+    
+    When setting thin pool's size based on the sum of its thin LVs we
+    need respect its minimum size. That can for example be its actual
+    size if it already exists.
+    
+    Resolves: rhbz#1449963
+    
+    (Together with the recent changes for thin pool padding this also
+    resolves rhbz#1435180.)
+
+commit ff1061bc948f333254b679d866166ad8269da991
+Merge: d293725 e4b63c7
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Tue May 9 13:09:28 2017 +0200
+
+    Merge pull request #580 from vojtechtrefny/rhel7-branch_fix-chunksize-ks
+    
+    Add RAID chunk size to the generated kickstart file
+
+commit d2937258c9c33f9ca3dbfaebfdf64deea6676476
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed May 3 10:49:22 2017 -0400
+
+    New version: blivet-0.61.15.62
+
+commit e4b63c7580efa169c144ea779aac1368f27ceb0f
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Wed May 3 16:19:02 2017 +0200
+
+    Add RAID chunk size to the generated kickstart file
+    
+    Resolves: rhbz#1447343
+
+commit 34fe7a67d87fd03073de09420acdb7a329cd6a6d
+Merge: e98f58e 76ec17a
+Author: Vendula Poncova <vponcova@redhat.com>
+Date:   Wed May 3 13:16:50 2017 +0200
+
+    Merge pull request #578 from poncovka/rhel7-branch-biosraid
+    
+    Fix resolve_devspec to fully support raid devices (#1445723)
+
+commit e98f58e821d287ac5871c2187d0ba72b25d91fe8
+Merge: 44ed16e e70eeab
+Author: David Lehman <dlehman@redhat.com>
+Date:   Tue May 2 13:07:41 2017 -0400
+
+    Merge pull request #579 from dwlehman/boot-md-metadata-ver-1184945
+    
+    Update md boot metadata version selection.
+
+commit e70eeabc08ab011bbfba45409de5997a7abfdb8d
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Apr 29 15:07:07 2015 -0500
+
+    Don't pass unused mountpoint dict to preCommitFixup.
+    
+    (cherry picked from commit b6792689cfe45a19d8350905641a85445f40d590)
+    
+    Related: rhbz#1184945
+
+commit d479da9aaea2794ae4b40faf2eebad5031907657
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed May 27 16:07:05 2015 -0500
+
+    Use the default md metadata version for everything except /boot/efi.
+    
+    Now that we've moved to grub2 this is no longer necessary for /boot.
+    As far as I know we have never actually allowed PReP on md, so that's
+    not needed either. Apparently UEFI firmware/bootloader still needs it.
+    
+    (cherry picked from commit 8bce84025e0f0af9b2538a2611e5d52257a82881)
+    
+    Resolves: rhbz#1184945
+
+commit 76ec17a33c5347527d1b2751f9eb735f9297e505
+Author: Vendula Poncova <vponcova@redhat.com>
+Date:   Tue Apr 25 16:58:26 2017 +0200
+
+    Fix resolve_devspec to fully support raid devices (#1445723)
+    
+    Return md name if it matches a device name for the given device
+    specification, so the device names are consistent when we work
+    with udev module and a devicetree.
+    
+    Resolves: rhbz#1445723
+
+commit 44ed16ea54bc8f05b3414ded266e022ac2ce0654
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Apr 12 15:34:04 2017 -0400
+
+    New version: 0.61.15.61
+
+commit ab8e0e05062e9fae792dfe64f83a8581612d418c
+Merge: fdce761 9235605
+Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
+Date:   Tue Apr 18 08:44:41 2017 +0200
+
+    Merge pull request #570 from vpodzime/rhel7-vg_thpool_reserve
+    
+    Reserve space for thin pool(s) to grow in a VG
+
+commit fdce7616d8b8c9c079b3db240f364c57a8e18b07
+Merge: 005cfea 25d4b7a
+Author: Radek Vykydal <rvykydal@redhat.com>
+Date:   Wed Apr 12 13:40:12 2017 +0200
+
+    Merge pull request #572 from rvykydal/rhel7-branch-rhbz#1411407-fork-from-thread-streerror-hang
+    
+    Call subprocess.Popen with absolute path to a binary (#1411407)
+
+commit 25d4b7ab288010b99cd730a4442d2f521df65853
+Author: Radek Vykydal <rvykydal@redhat.com>
+Date:   Mon Apr 10 14:46:49 2017 +0200
+
+    Call subprocess.Popen with absolute path to a binary (#1411407)
+    
+    Related: rhbz#1411407
+    
+    Python is trying to execve the program (specified without the path) in the
+    fork, iterating over the path list and calling strerror when failing on paths
+    before it finds the right one. The strerror call can then hang waiting forever
+    for a lock held by parent process (__libc_setlocale_lock).
+    
+    NOTE: in the future we want to replace this workaround by using subprocess32
+    module.
+
+commit 92356058d19def13f7468c7f4e493bd6d7dc149c
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed Apr 5 17:47:20 2017 +0200
+
+    Also set pool's size to at least sum of its thin LVs
+    
+    Because that's what VG takes into account when calculating free
+    space and thus, among the other things, the base for growth.
+    
+    Related: rhbz#1131247
+
+commit 16bcac10d4580394917554f31f446cafaeefeecf
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed Apr 5 17:43:54 2017 +0200
+
+    Check if new device's size is != 0 when comparing it to maxSize
+    
+    Setting size to 0 happens as part of the operations in
+    DeviceFactory (when removing a device). And when that happens,
+    the calculated maxSize can be negative (as an interim
+    state). However, setting device's size to 0 in order to make sure
+    its container can omit the space for it should be always allowed.
+    
+    Related: rhbz#1131247
+
+commit 60d48c7f2c760c6e4be0a77f0051b60b50daa67a
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Wed Apr 5 17:43:08 2017 +0200
+
+    Do not count in thin LVs when calculating VG's free space
+    
+    Thin LVs are allocated from a thin pool not from the VG itself.
+    
+    Related: rhbz#1131247
+
+commit e6747f14b58a7bb35c1dc9c44a48a89b16e320fa
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Thu Apr 6 15:56:58 2017 +0200
+
+    Support multiplication of Size by float
+    
+    Decimal doesn't support multiplication by float due to potential
+    loss of precision. But we sometimes need to for example make the
+    size 25% bigger so size * 1.25. Let's just convert the float to
+    Decimal instead.
+    
+    Related: rhbz#1131247
+
+commit dd08cbf059d11ec7f9866fa81bcffd4e6d3551b9
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Tue Apr 4 14:34:48 2017 +0200
+
+    Reserve space in a VG when using LVMThinPFactory
+    
+    Instead of adding padding to thin pool. See commit 4f5e65419e for
+    details.
+    
+    Related: rhbz#1131247
+    
+    (ported commit efc0db967a738877fa822992f0a24dac9344e3b9)
+
+commit 5fee129bf237f924566ca4e92d2be54a06bbabe4
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Tue Apr 4 12:13:24 2017 +0200
+
+    Reserve space in a VG instead of padding thin pools on autopart
+    
+    Padding thin pools brings many complications and issues. For
+    example, what should we do with existing thin pools? What if
+    somebody really wants to create a thin pool of size not leaving
+    enough space for the padding in the VG? And more.
+    
+    Nevertheless, we want to leave some space in the VG if doing
+    thinp auto partitioning because that's a good practice. However,
+    we already have an existing mechanism for that -- the VG can
+    reserve some space in itself (the size or percentage of which can
+    even be defined by user). So let's just extend and use this
+    mechanism to make sure there's some free space in the VG left for
+    the thin pool to grow when doing autopartitioning. If users give
+    us all the numbers, we should just do as they say, they probably
+    know what they are doing.
+    
+    (ported commit 788d7d0d8fcaa3c830bdcdc24482e1b7ea815920)
+    
+    Resolves: rhbz#1131247
+
+commit 005cfea2db1f02cd6bccf2414c3f4f31b7601bc8
+Author: David Lehman <dlehman@redhat.com>
+Date:   Mon Mar 27 12:40:57 2017 -0400
+
+    New version: 0.61.15.60
+
+commit 520a43b1af529f046c8a58fd9acdaffd8d055f1b
+Merge: 9c0fb8d b88b2d9
+Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
+Date:   Mon Mar 27 17:16:35 2017 +0200
+
+    Merge pull request #563 from vpodzime/rhel7-snapshot
+    
+    Fixes for thin snapshot creation
+
+commit 9c0fb8d243b28a7e43019d74642d89d879ec12b4
+Merge: f048b33 876147e
+Author: Vendula Poncova <vponcova@redhat.com>
+Date:   Thu Mar 23 14:31:11 2017 +0100
+
+    Merge pull request #546 from poncovka/rhel7-branch-fba
+    
+    FBA DASD should use the msdos disk label type (#1214407)
+
+commit b88b2d93b9d7abda278217123ea55968e9c3b4e2
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Fri Dec 16 16:42:37 2016 +0100
+
+    Add a method to regenerate XFS' uuid
+    
+    This is needed when creating snapshots of the file system that can be mounted at
+    the same time as the original file system. If both have the same UUID, the
+    second mount fails (well, unless 'nouuid' option is used).
+    
+    Related: rhbz#1413942
+
+commit 2aa5f37d158048362ea8f3285d78f074860e4d04
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon Jan 16 16:53:29 2017 +0100
+
+    Properly unset mountpoint of a snapshot's format
+    
+    It's _mountpoint and it should be None not "" because it is later checked as 'is
+    not None'.
+    
+    Related: rhbz#1413942
+
+commit 8309c10146d5773e875579d627be5b1d4d600a34
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon Jan 16 13:56:10 2017 +0100
+
+    Update the snapshot's format's exists flag on creation
+    
+    Once the snapshot is created, it has a separate format. However, the format
+    exists iff the origin's format exists at the moment when the snapshot is
+    created.
+    
+    Related: rhbz#1413942
+
+commit 94dd0eda2c5452f98bb0ad75cfbd503e6f6208bc
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon Dec 19 17:22:20 2016 +0100
+
+    Do not require origin to exist when creating snapshot
+    
+    Otherwise the user code cannot create the snapshot for a
+    non-existing LV in the model to find out if it's even possible.
+    
+    Related: rhbz#1413942
+
+commit 5945669716c0c7160e3fab8cfe12c02849721781
+Author: Vratislav Podzimek <vpodzime@redhat.com>
+Date:   Mon Mar 20 16:19:35 2017 +0100
+
+    Make padding smaller for existing thin pools (#1432012)
+    
+    Because when creating them we could have not know the metadata
+    size and relied on the padding to provide enough space for
+    it. Then for an existing thin pool, we know the metadata size and
+    if we just sum it with the padding we can easily get over the
+    VG's (free space) size resulting in a VG reporting negative free
+    space.
+
+commit f048b33720c57060bc23c2426ba7ca3d8f742124
+Merge: a7f8a44 d303d3d
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Fri Mar 17 12:02:24 2017 +0100
+
+    Merge pull request #554 from vojtechtrefny/rhel7-branch_chunk-size
+    
+    Allow custom chunk size specification for MDRaidArrayDevice
+
+commit a7f8a4428c698725f62414ea7abf5ee0143ffae2
+Merge: 4257538 9ac6211
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Fri Mar 17 12:01:48 2017 +0100
+
+    Merge pull request #555 from vojtechtrefny/rhel7-branch_linear-raid-fix
+    
+    Fix detection of linear MD RAID
+
+commit 4257538a6b2cedacca2d400b1b5bc9195975dc8d
+Merge: 9948555 1b36639
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Fri Mar 17 12:01:01 2017 +0100
+
+    Merge pull request #558 from vojtechtrefny/rhel7-branch_fix-biosraid-ignoredisk
+    
+    Use all ancestors when adding RAID disks to exclusiveDisks
+
+commit 1b36639f1cdbcc3a3b7f5f33c9439948e8fa6e5f
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Tue Mar 14 12:34:45 2017 +0100
+
+    Use all ancestors when adding RAID disks to exclusiveDisks
+    
+    For some BIOS RAIDs the hierarchy of devices looks like
+    [sdb, sdc] -> imsm0 -> md126 (= Volume0_0) so when adding Volume0_0
+    to exclusiveDisks we need to check for all ancestors, not only
+    parents, to add the disks to exclusiveDisks.
+    
+    Resolves: rhbz#1327463
+    
+    Submitted-by: Masahiro Matsuya <mmatsuya@redhat.com>
+
+commit 9ac62113253cacb1a5924468dded555c38c2a652
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Tue Mar 14 09:25:33 2017 +0100
+
+    Fix detection of linear MD RAID
+    
+    'Linear' RAID class was missing 'nick' property causing Anaconda
+    to crash with an AttributeError on system with a linear MD RAID.
+    This also fixes same issue for the Container, Single and Dup RAID
+    levels.
+    
+    Resolves: rhbz#1372414
+
+commit d303d3da9ffec9c856ca0116f22d70b35855c199
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Wed Mar 16 15:04:32 2016 +0100
+
+    Allow custom chunk size specification for MDRaidArrayDevice
+    
+    Resolves: rhbz#1405141
+
+commit 994855578500b7a5219d6643bee1022b827e1b56
+Merge: 5499906 76a07f3
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Mon Mar 13 08:56:49 2017 +0100
+
+    Merge pull request #479 from vojtechtrefny/rhel7-branch_mount-symlinks
+    
+    Eliminate mountpoint symlinks when looking for mounted device
+
+commit 876147e5cdc24ca800f687fbf5a1f95ff6d1ef5c
+Author: Vendula Poncova <vponcova@redhat.com>
+Date:   Thu Feb 23 10:07:38 2017 +0100
+
+    Remove the useless method requiredDiskLabelType
+    
+    The method requiredDiskLabelType can be removed, because it is not
+    needed anymore.
+
+commit aad5acf0db661f75b573ee19642355364e73a838
+Author: Vendula Poncova <vponcova@redhat.com>
+Date:   Fri Feb 17 14:26:17 2017 +0100
+
+    FBA DASD should use the msdos disk label type (#1214407)
+    
+    There can be created up to three partitions on FBA DASD with the msdos
+    disk label type instead of only one, so we should prefer that.
+    
+    Resolves: rhbz#1214407
+
 commit 549990606f2e0a329d51aee9dc46e11d1bcfc77c
 Author: Samantha N. Bueno <sbueno+anaconda@redhat.com>
 Date:   Thu Sep 15 15:41:22 2016 -0400
@@ -182,6 +718,14 @@ Date:   Tue Aug 2 09:12:34 2016 -0400
     Fix lookup of md partition's disk.
     
     Resolves: rhbz#1362161
+
+commit 76a07f389368642c9f7fdad41d2a7dd95edbc548
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Tue Aug 2 10:22:16 2016 +0200
+
+    Eliminate mountpoint symlinks when looking for mounted device
+    
+    Resolves: rhbz#1322439
 
 commit 173e0a6cfbfe09a524519f4c5ab0875ad03093c2
 Author: Samantha N. Bueno <sbueno+anaconda@redhat.com>
@@ -2469,7 +3013,7 @@ Date:   Wed Jan 21 09:57:08 2015 +0100
     (cherry picked from commit 16eace79a7204ede14f7234423bf4eb9f93114c2)
     
     Conflicts:
-    	blivet/devices.py
+            blivet/devices.py
 
 commit 1da13245e166795fb2ad9f980c05ffc1d58fa6d2
 Author: Vratislav Podzimek <vpodzime@redhat.com>
@@ -2490,7 +3034,7 @@ Date:   Wed Jan 21 10:06:34 2015 +0100
     (cherry picked from commit 77c5f24b218010be81af50e75118b9c74d06086e)
     
     Conflicts:
-    	blivet/devices.py
+            blivet/devices.py
 
 commit cacd07c9c54aeaaa6faf6e8627c689a8c2a49ab4
 Author: Vratislav Podzimek <vpodzime@redhat.com>
@@ -2513,8 +3057,8 @@ Date:   Tue Sep 16 15:36:58 2014 +0200
     (cherry picked from commit a6d17f94b959c9ed2b3eb1f8aa56de58951a0865)
     
     Conflicts:
-    	blivet/devices.py
-    	blivet/partitioning.py
+            blivet/devices.py
+            blivet/partitioning.py
 
 commit 32838d7c0d2ee489f5a015ed94f9d2bc161c6656
 Author: Vratislav Podzimek <vpodzime@redhat.com>
@@ -7863,10 +8407,10 @@ Date:   Fri Mar 28 13:00:53 2014 -0500
     Now we get a separate dict for each LV, eg:
     
     {"fedora-foo": {"LVM2_LV_NAME": "foo",
-    		"LVM2_LV_SIZE": 1,
-    		...}
+                    "LVM2_LV_SIZE": 1,
+                    ...}
      "fedora-bar": {"LVM2_LV_NAME": "bar",
-    		...}
+                    ...}
      "fedora-baz": {...}}
     
     Basically, it means that each lv gets it own info dict, which is much
@@ -10183,7 +10727,7 @@ Date:   Tue Dec 17 11:03:34 2013 -0500
     Signed-off-by: mulhern <amulhern@redhat.com>
     
     Conflicts:
-    	blivet/formats/fs.py
+            blivet/formats/fs.py
 
 commit 3624a1d989723f257020c7e93be3f05c4ca45561
 Author: mulhern <amulhern@redhat.com>
@@ -10343,7 +10887,7 @@ Date:   Fri Nov 8 15:52:30 2013 -0500
     Signed-off-by: mulhern <amulhern@redhat.com>
     
     Conflicts:
-    	blivet/formats/__init__.py
+            blivet/formats/__init__.py
 
 commit 832b47324d5729e3e314d7f7bb243a7ea9c81821
 Author: mulhern <amulhern@redhat.com>
@@ -11027,7 +11571,7 @@ Date:   Tue Nov 19 12:06:17 2013 -0500
     * raid_descriptors
     
     Conflicts:
-    	blivet/devicelibs/mdraid.py
+            blivet/devicelibs/mdraid.py
 
 commit 12523452ec7d406cab6760d73b3ba45a88ccf465
 Author: mulhern <amulhern@redhat.com>

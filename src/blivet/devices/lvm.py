@@ -25,6 +25,7 @@ import copy
 import pprint
 import re
 import time
+from collections import namedtuple
 
 # device backend modules
 from ..devicelibs import lvm
@@ -45,6 +46,9 @@ from .storage import StorageDevice
 from .container import ContainerDevice
 from .dm import DMDevice
 from .md import MDRaidArrayDevice
+
+ThPoolReserveSpec = namedtuple("ThPoolReserveSpec", ["percent", "min", "max"])
+""" A namedtuple class for specifying restrictions of space reserved for a thin pool to grow """
 
 class LVMVolumeGroupDevice(ContainerDevice):
     """ An LVM Volume Group """
@@ -102,6 +106,7 @@ class LVMVolumeGroupDevice(ContainerDevice):
         self.peFree = util.numeric_type(peFree)
         self.reserved_percent = 0
         self.reserved_space = Size(0)
+        self._thpool_reserve = None
 
         # this will have to be covered by the 20% pad for non-existent pools
         self.poolMetaData = 0
@@ -323,6 +328,16 @@ class LVMVolumeGroupDevice(ContainerDevice):
         return modified
 
     @property
+    def thpool_reserve(self):
+        return self._thpool_reserve
+
+    @thpool_reserve.setter
+    def thpool_reserve(self, value):
+        if value is not None and not isinstance(value, ThPoolReserveSpec):
+            raise ValueError("Invalid thpool_reserve given, must be of type ThPoolReserveSpec")
+        self._thpool_reserve = value
+
+    @property
     def reservedSpace(self):
         """ Reserved space in this VG """
         reserved = Size(0)
@@ -330,6 +345,10 @@ class LVMVolumeGroupDevice(ContainerDevice):
             reserved = self.reserved_percent * Decimal('0.01') * self.size
         elif self.reserved_space > 0:
             reserved = self.reserved_space
+        elif self._thpool_reserve and any(self.thinpools):
+            reserved = min(max(self._thpool_reserve.percent * Decimal(0.01) * self.size,
+                               self._thpool_reserve.min),
+                           self._thpool_reserve.max)
 
         return self.align(reserved, roundup=True)
 
@@ -378,7 +397,7 @@ class LVMVolumeGroupDevice(ContainerDevice):
 
         # total the sizes of any LVs
         log.debug("%s size is %s", self.name, self.size)
-        used = sum(lv.vgSpaceUsed for lv in self.lvs)
+        used = sum(lv.vgSpaceUsed for lv in self.lvs if not isinstance(lv, LVMThinLogicalVolumeDevice))
         used += self.reservedSpace
         used += self.poolMetaData
         free = self.size - used
@@ -773,6 +792,10 @@ class LVMLogicalVolumeDevice(DMDevice):
         # set up the vg's pvs so lvm can remove the lv
         self.vg.setupParents(orig=True)
 
+        # setting up VG's PVs may have caused this LV was automatically
+        # activated, make sure it is deactivated before removal
+        self.teardown()
+
     def _destroy(self):
         """ Destroy the device. """
         log_method_call(self, self.name, status=self.status)
@@ -936,7 +959,6 @@ class LVMSnapShotBase(object):
         """
         self._originSpecifiedCheck(origin, vorigin, exists)
         self._originTypeCheck(origin)
-        self._originExistenceCheck(origin)
         self._voriginExistenceCheck(vorigin, exists)
 
         self.origin = origin
@@ -954,10 +976,6 @@ class LVMSnapShotBase(object):
         if origin and not isinstance(origin, LVMLogicalVolumeDevice):
             raise ValueError("lvm snapshot origin must be a logical volume")
 
-    def _originExistenceCheck(self, origin):
-        if origin and not origin.exists:
-            raise ValueError("lvm snapshot origin volume must already exist")
-
     def _voriginExistenceCheck(self, vorigin, exists):
         if vorigin and not exists:
             raise ValueError("only existing vorigin snapshots are supported")
@@ -974,7 +992,7 @@ class LVMSnapShotBase(object):
         fmt = copy.deepcopy(self.origin.format)
         fmt.exists = False
         if hasattr(fmt, "mountpoint"):
-            fmt.mountpoint = ""
+            fmt._mountpoint = None
             fmt._chrootedMountpoint = None
             fmt.device = self.path # pylint: disable=no-member
 
@@ -1096,6 +1114,12 @@ class LVMSnapShotDevice(LVMSnapShotBase, LVMLogicalVolumeDevice):
         return (self.origin == dep or
                 super(LVMSnapShotBase, self).dependsOn(dep))
 
+    def _postCreate(self):
+        LVMLogicalVolumeDevice._postCreate(self)
+        # the snapshot's format exists if the origin's format exists
+        self.format.exists = self.origin.format.exists
+
+
 class LVMThinPoolDevice(LVMLogicalVolumeDevice):
     """ An LVM Thin Pool """
     _type = "lvmthinpool"
@@ -1155,10 +1179,17 @@ class LVMThinPoolDevice(LVMLogicalVolumeDevice):
                                                 percent=percent,
                                                 segType=segType)
 
-        self.metaDataSize = metadatasize or 0
         self.chunkSize = chunksize or 0
         self.profile = profile
         self._lvs = []
+
+        self.metaDataSize = Size(0)
+        if metadatasize:
+            self.metaDataSize = metadatasize
+        elif not self.exists and not grow:
+            # a thin pool we are not going to grow -> lets calculate metadata
+            # size now if not given explicitly
+            self.autoset_md_size()
 
     def _addLogVol(self, lv):
         """ Add an LV to this pool. """
@@ -1184,21 +1215,43 @@ class LVMThinPoolDevice(LVMLogicalVolumeDevice):
         return self._lvs[:]     # we don't want folks changing our list
 
     @property
-    def vgSpaceUsed(self):
-        cache_size = Size(0)
-        if self.cached:
-            cache_size = self.cache.size
-        space = self.vg.align(self.size, roundup=True) * self.copies + self.logSize + self.metaDataSize + cache_size
-        space += lvm.get_pool_padding(self.size, pesize=self.vg.peSize)
-        return space
-
-    @property
     def usedSpace(self):
         return sum(l.poolSpaceUsed for l in self.lvs)
 
     @property
     def freeSpace(self):
         return self.size - self.usedSpace
+
+    def autoset_md_size(self):
+        """ If self._metadata_size not set already, it calculates the recommended value
+        and sets it while subtracting the size from self.size.
+
+        """
+        if self.metaDataSize != 0:
+            return  # Metadata size already set
+
+        if self.size == 0:
+            return  # no size (yet) to derive MD size from
+
+        log.debug("Auto-setting thin pool metadata size")
+
+        # we need to know chunk size to calculate recommended metadata size
+        if self.chunkSize == 0:
+            self.chunkSize = lvm.LVM_THINP_DEFAULT_CHUNK_SIZE
+            log.debug("Using default chunk size: %s", self.chunkSize)
+
+        self.metaDataSize = lvm.get_pool_metadata_size(self._size,
+                                                       self.chunkSize,
+                                                       100)  # snapshots
+        log.debug("Recommended metadata size: %s", self.metaDataSize)
+
+        self.metaDataSize = self.vg.align(self.metaDataSize, roundup=True)
+        log.debug("Rounded metadata size to extents: %s", self.metaDataSize)
+
+        # we also need space for the (potential) pmspare LV (of the same size as
+        # the metaDataSize)
+        log.debug("Adjusting size from %s to %s", self.size, self.size - 2 * self.metaDataSize)
+        self._size = self.size - 2 * self.metaDataSize
 
     def _create(self):
         """ Create the device. """
@@ -1361,6 +1414,12 @@ class LVMThinSnapShotDevice(LVMSnapShotBase, LVMThinLogicalVolumeDevice):
 
         lvm.thinsnapshotcreate(self.vg.name, self._name, self.origin.lvname,
                                pool_name=pool_name)
+
+
+    def _postCreate(self):
+        LVMThinLogicalVolumeDevice._postCreate(self)
+        # the snapshot's format exists if the origin's format exists
+        self.format.exists = self.origin.format.exists
 
     def dependsOn(self, dep):
         # once a thin snapshot exists it no longer depends on its origin

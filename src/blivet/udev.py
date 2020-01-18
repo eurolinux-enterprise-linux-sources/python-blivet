@@ -28,15 +28,23 @@ import subprocess
 from . import util
 from .size import Size
 from .flags import flags
+from .nvdimm import nvdimm
 
 import pyudev
 global_udev = pyudev.Context()
 
+import gi
+gi.require_version("BlockDev", "2.0")
+from gi.repository import BlockDev as blockdev
+
 import logging
 log = logging.getLogger("blivet")
 
-INSTALLER_BLACKLIST = (r'^mtd', r'^mmcblk.+boot', r'^mmcblk.+rpmb', r'^zram', r'ndblk', r'pmem')
+INSTALLER_BLACKLIST = [r'^mtd', r'^mmcblk.+boot', r'^mmcblk.+rpmb', r'^zram', r'ndblk']
 """ device name regexes to ignore when flags.installer_mode is True """
+# we don't have NVDIMM plugin, just ignore all pmem devices too
+if not nvdimm.nvdimm_plugin_available:
+    INSTALLER_BLACKLIST.append(r'^pmem')
 
 def get_device(sysfs_path):
     try:
@@ -168,6 +176,10 @@ def device_get_name(udev_info):
 def device_get_format(udev_info):
     """ Return a device's format type as reported by udev. """
     return udev_info.get("ID_FS_TYPE")
+
+def device_get_format_version(udev_info):
+    """ Return a device's format version as reported by udev. """
+    return udev_info.get("ID_FS_VERSION")
 
 def device_get_uuid(udev_info):
     """ Get the UUID from the device's format as reported by udev.
@@ -817,3 +829,17 @@ def device_get_fcoe_identifier(info):
     if device_is_fcoe(info) and len(path_components) >= 4 and \
        path_components[2] == 'fc':
         return path_components[3]
+
+def device_is_nvdimm_namespace(info):
+    if info.get("DEVTYPE") != "disk":
+        return False
+
+    devname = info.get("DEVNAME", "")
+
+    # we don't have NVDIMM plugin, just return false
+    if not nvdimm.nvdimm_plugin_available:
+        return False
+
+    ninfo = blockdev.nvdimm_namespace_get_devname(devname)
+
+    return ninfo is not None

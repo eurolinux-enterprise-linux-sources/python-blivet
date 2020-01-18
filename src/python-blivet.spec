@@ -1,7 +1,7 @@
 Summary:  A python module for system storage configuration
 Name: python-blivet
 Url: http://fedoraproject.org/wiki/blivet
-Version: 0.61.15.65
+Version: 0.61.15.69
 Release: 1%{?dist}
 Epoch: 1
 License: LGPLv2+
@@ -64,6 +64,32 @@ make DESTDIR=%{buildroot} install
 %{python_sitelib}/*
 
 %changelog
+* Wed Feb 21 2018 David Lehman <dlehman@redhat.com> - 0.61.15.69-1
+- Fix accounting for metadata when growing lvm. (dlehman)
+
+* Fri Feb 09 2018 David Lehman <dlehman@redhat.com> - 0.61.15.68-1
+- Catch lvm metadata lookup failure in md post create. (dlehman)
+  Related: rhbz#1223564
+  Resolves: rhbz#1543579
+
+* Wed Feb 07 2018 David Lehman <dlehman@redhat.com> - 0.61.15.67-1
+- fcoe: remove /etc/fcoe dir if it exists before copying configuration
+  (rvykydal)
+  Resolves: rhbz#1482512
+- Find and remove stale LVM metadata immediately after creating md array.
+  (dlehman)
+  Resolves: rhbz#1223564
+- Add ability to specify vg by uuid for vgremove. (dlehman)
+  Related: rhbz#1223564
+
+* Fri Nov 03 2017 David Lehman <dlehman@redhat.com> - 0.61.15.66-1
+- mkfs.ext4 no longer hangs on confirmation (japokorn)
+  Resolves: rhbz#1461459
+- Stop enforcing obsolete limits on partition count. (dlehman)
+  Resolves: rhbz#1460668
+- Do not try to use protected disks for autopart (vtrefny)
+  Resolves: rhbz#1456409
+
 * Wed Jun 28 2017 David Lehman <dlehman@redhat.com> - 0.61.15.65-1
 - Autoset metadata size on percent-based thin pools (vpodzime)
   Resolves: rhbz#1463198

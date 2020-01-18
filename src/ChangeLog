@@ -1,3 +1,171 @@
+commit 5bd832657181acc41deeaafea2c9f0e3e775f24a
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Feb 21 11:49:35 2018 -0500
+
+    New version: 0.61.15.69
+
+commit 915044304c6ce0d1cc2f7ff5d9d81470ed4c3e6c
+Merge: d1f9f95f 6480770d
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Feb 21 11:05:23 2018 -0500
+
+    Merge branch 'rhel7-thpool-grow-metadata' into rhel7-branch
+
+commit 6480770d071833fd816c639748bc6805b6cc9515
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Feb 2 10:49:36 2018 -0500
+
+    Fix accounting for metadata when growing lvm.
+    
+    LVM sets aside space for an extra copy of the thin pool metadata.
+    We will set aside this space for any logical volume with an
+    explicit metadata size just in case.
+    
+    Resolves: rhbz#1494475
+
+commit d1f9f95f6496653fc178e7df4e066ca4cb421bea
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Feb 9 08:31:03 2018 -0500
+
+    New version: 0.61.15.68
+
+commit 77039cb4d7037b47c59e26890d1e68f064656dfe
+Merge: b2ef6f70 15db06fc
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Feb 9 08:18:54 2018 -0500
+
+    Merge pull request #659 from dwlehman/1223564-followup
+    
+    Followup for #651
+
+commit 15db06fc9954e1c5b81d7ae9eb2f6210ea75635d
+Author: David Lehman <dlehman@redhat.com>
+Date:   Thu Feb 8 15:31:54 2018 -0500
+
+    Catch lvm metadata lookup failure in md post create.
+    
+    Resolves: rhbz#1543579
+    Related: rhbz#1223564
+
+commit b2ef6f70f7f4e4bdd6d2462e3b8c3159069ab33c
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Feb 7 11:45:54 2018 -0500
+
+    New version: 0.61.16.67
+
+commit ac2e18e978652ceb9839e145bf523f21f3480a85
+Merge: 4c9ea1d0 57524f38
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Feb 7 11:17:38 2018 -0500
+
+    Merge pull request #651 from dwlehman/mdcreate-stale-lvm-metadata
+    
+    Remove stale lvm metadata found on new md arrays.
+
+commit 4c9ea1d08d9ab3b04d6f936b222e86dee7587fb0
+Merge: 143baf7e 16ea6e01
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Feb 7 11:16:11 2018 -0500
+
+    Merge pull request #656 from rvykydal/rhel7-branch-fix-fcoe-on-rhev
+    
+    fcoe: remove /etc/fcoe dir if it exists before copying configuration …
+
+commit 16ea6e0116523390beae428a2132704bfc5a58b9
+Author: Radek Vykydal <rvykydal@redhat.com>
+Date:   Tue Feb 6 10:05:30 2018 +0100
+
+    fcoe: remove /etc/fcoe dir if it exists before copying configuration (#1482512)
+    
+    Resolves: rhbz#1482512
+    
+    On image installation (eg RHEV) the configuration directory may already exist.
+    Remove it in this case before copying the configuration (same as we do for iscsi).
+
+commit 57524f382e414a56d729e8f274fa279bebf57a6c
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Jan 26 10:23:38 2018 -0500
+
+    Followups for stale lvm metadata removal after md creation.
+
+commit 1b0491830a3278376b7bda68c7f3fe36d144076a
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jan 17 13:17:24 2018 -0500
+
+    Find and remove stale LVM metadata immediately after creating md array.
+    
+    Resolves: rhbz#1223564
+
+commit 272b910214cd78fbe10a6434835c704adeeedcef
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jan 17 12:57:26 2018 -0500
+
+    Add ability to specify vg by uuid for vgremove.
+    
+    Related: rhbz#1223564
+
+commit 143baf7e80430da384a26d506015b96036e24e9e
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Nov 3 10:49:09 2017 -0400
+
+    New version: 0.61.15.66
+
+commit b58c18dbc90f02c4527645bf7c3e4102d858052c
+Merge: 8545cefa 0372da2b
+Author: David Lehman <dlehman@redhat.com>
+Date:   Fri Nov 3 10:21:54 2017 -0400
+
+    Merge pull request #636 from vojtechtrefny/rhel7-branch_autopart-read-only
+    
+    Do not try to use protected disks for autopart
+
+commit 8545cefa3e9834a13571005a1c7ee385d26918b2
+Merge: 6dea2f3d 62a66fde
+Author: japokorn <japokorn@redhat.com>
+Date:   Wed Oct 18 14:20:36 2017 +0200
+
+    Merge pull request #641 from japokorn/rhel7-branch-ext4_confirm
+    
+    mkfs.ext4 no longer hangs on confirmation
+
+commit 62a66fde4176ae44204f9a2b10b69d527674b90d
+Author: Jan Pokorny <japokorn@redhat.com>
+Date:   Mon Oct 16 14:56:09 2017 +0200
+
+    mkfs.ext4 no longer hangs on confirmation
+    
+    Fixed confirmation hang when ext[234] partition was created on the whole
+    disk.
+    
+    Resolves: rhbz#1461459
+
+commit 6dea2f3df1c9320a74f41fe63af694abdcb5133a
+Merge: e8df8b48 18e6c263
+Author: japokorn <japokorn@redhat.com>
+Date:   Mon Oct 16 09:51:26 2017 +0200
+
+    Merge pull request #639 from japokorn/rhel7-branch-max_logical
+    
+    Stop enforcing obsolete limits on partition count. (#1460668)
+
+commit 18e6c26376a84fafe854ab0fc5542af18b59c88d
+Author: David Lehman <dlehman@redhat.com>
+Date:   Wed Jun 21 15:36:42 2017 -0400
+
+    Stop enforcing obsolete limits on partition count. (#1460668)
+    
+    (cherry picked from commit d81ed9e8eb4eb861927276b1632ff1a49263fc20)
+    
+    Resolves: rhbz#1460668
+
+commit 0372da2be0a554792735454cb43e4bbb788c43ea
+Author: Vojtech Trefny <vtrefny@redhat.com>
+Date:   Thu Oct 5 11:09:40 2017 +0200
+
+    Do not try to use protected disks for autopart
+    
+    Resolves: rhbz#1456409
+
 commit e8df8b48b137cbcb596b21c956b7e053c83e682c
 Author: David Lehman <dlehman@redhat.com>
 Date:   Wed Jun 28 09:52:38 2017 -0400
@@ -5,7 +173,7 @@ Date:   Wed Jun 28 09:52:38 2017 -0400
     New version: 0.61.15.65
 
 commit 9e57aaeaaa8ee7d851bfb69ca9ee54a5eec43aa2
-Merge: 182d262 e8c4c00
+Merge: 182d2629 e8c4c006
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Wed Jun 28 15:46:44 2017 +0200
 
@@ -43,7 +211,7 @@ Date:   Wed Jun 7 10:44:24 2017 -0400
     New version: 0.61.15.64
 
 commit 2c82c923a518afa767948ce2daad375c46653131
-Merge: a921ef1 062360c
+Merge: a921ef1b 062360ce
 Author: David Lehman <dlehman@redhat.com>
 Date:   Wed Jun 7 10:31:49 2017 -0400
 
@@ -52,7 +220,7 @@ Date:   Wed Jun 7 10:31:49 2017 -0400
     Round the recommended thpool metadata size to extents
 
 commit a921ef1ba3a492861068a96e0e2206244f72d5f1
-Merge: c240820 237e4a3
+Merge: c240820a 237e4a3c
 Author: David Lehman <dlehman@redhat.com>
 Date:   Wed Jun 7 10:21:04 2017 -0400
 
@@ -75,7 +243,7 @@ Date:   Mon Jun 5 15:17:25 2017 +0200
     Resolves: rhbz#1456821
 
 commit c240820a0b3345a30b96726d648f313edda05e8f
-Merge: d26f5ce 0272660
+Merge: d26f5ce6 0272660a
 Author: David Lehman <dlehman@redhat.com>
 Date:   Wed Jun 7 09:49:28 2017 -0400
 
@@ -113,7 +281,7 @@ Date:   Tue May 16 15:43:48 2017 -0400
     New version: 0.61.15.63
 
 commit ef387064e70d75d4ef1d1659e9e138717bd4b6b6
-Merge: 43852fa 7335c86
+Merge: 43852fa8 7335c863
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Mon May 15 16:13:27 2017 +0200
 
@@ -122,7 +290,7 @@ Date:   Mon May 15 16:13:27 2017 +0200
     Use the uuid module instead of the uuidgen tool
 
 commit 43852fa843962d69722e7c480d20bd582b2347c8
-Merge: ff1061b ba2ac50
+Merge: ff1061bc ba2ac50d
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Mon May 15 16:13:18 2017 +0200
 
@@ -157,7 +325,7 @@ Date:   Wed May 3 15:54:33 2017 +0200
     resolves rhbz#1435180.)
 
 commit ff1061bc948f333254b679d866166ad8269da991
-Merge: d293725 e4b63c7
+Merge: d2937258 e4b63c75
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Tue May 9 13:09:28 2017 +0200
 
@@ -180,7 +348,7 @@ Date:   Wed May 3 16:19:02 2017 +0200
     Resolves: rhbz#1447343
 
 commit 34fe7a67d87fd03073de09420acdb7a329cd6a6d
-Merge: e98f58e 76ec17a
+Merge: e98f58e8 76ec17a3
 Author: Vendula Poncova <vponcova@redhat.com>
 Date:   Wed May 3 13:16:50 2017 +0200
 
@@ -189,7 +357,7 @@ Date:   Wed May 3 13:16:50 2017 +0200
     Fix resolve_devspec to fully support raid devices (#1445723)
 
 commit e98f58e821d287ac5871c2187d0ba72b25d91fe8
-Merge: 44ed16e e70eeab
+Merge: 44ed16ea e70eeabc
 Author: David Lehman <dlehman@redhat.com>
 Date:   Tue May 2 13:07:41 2017 -0400
 
@@ -240,7 +408,7 @@ Date:   Wed Apr 12 15:34:04 2017 -0400
     New version: 0.61.15.61
 
 commit ab8e0e05062e9fae792dfe64f83a8581612d418c
-Merge: fdce761 9235605
+Merge: fdce7616 92356058
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Tue Apr 18 08:44:41 2017 +0200
 
@@ -249,7 +417,7 @@ Date:   Tue Apr 18 08:44:41 2017 +0200
     Reserve space for thin pool(s) to grow in a VG
 
 commit fdce7616d8b8c9c079b3db240f364c57a8e18b07
-Merge: 005cfea 25d4b7a
+Merge: 005cfea2 25d4b7ab
 Author: Radek Vykydal <rvykydal@redhat.com>
 Date:   Wed Apr 12 13:40:12 2017 +0200
 
@@ -366,7 +534,7 @@ Date:   Mon Mar 27 12:40:57 2017 -0400
     New version: 0.61.15.60
 
 commit 520a43b1af529f046c8a58fd9acdaffd8d055f1b
-Merge: 9c0fb8d b88b2d9
+Merge: 9c0fb8d2 b88b2d93
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Mon Mar 27 17:16:35 2017 +0200
 
@@ -375,7 +543,7 @@ Date:   Mon Mar 27 17:16:35 2017 +0200
     Fixes for thin snapshot creation
 
 commit 9c0fb8d243b28a7e43019d74642d89d879ec12b4
-Merge: f048b33 876147e
+Merge: f048b337 876147e5
 Author: Vendula Poncova <vponcova@redhat.com>
 Date:   Thu Mar 23 14:31:11 2017 +0100
 
@@ -443,7 +611,7 @@ Date:   Mon Mar 20 16:19:35 2017 +0100
     space.
 
 commit f048b33720c57060bc23c2426ba7ca3d8f742124
-Merge: a7f8a44 d303d3d
+Merge: a7f8a442 d303d3da
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Fri Mar 17 12:02:24 2017 +0100
 
@@ -452,7 +620,7 @@ Date:   Fri Mar 17 12:02:24 2017 +0100
     Allow custom chunk size specification for MDRaidArrayDevice
 
 commit a7f8a4428c698725f62414ea7abf5ee0143ffae2
-Merge: 4257538 9ac6211
+Merge: 4257538a 9ac62113
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Fri Mar 17 12:01:48 2017 +0100
 
@@ -461,7 +629,7 @@ Date:   Fri Mar 17 12:01:48 2017 +0100
     Fix detection of linear MD RAID
 
 commit 4257538a6b2cedacca2d400b1b5bc9195975dc8d
-Merge: 9948555 1b36639
+Merge: 99485557 1b36639f
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Fri Mar 17 12:01:01 2017 +0100
 
@@ -506,7 +674,7 @@ Date:   Wed Mar 16 15:04:32 2016 +0100
     Resolves: rhbz#1405141
 
 commit 994855578500b7a5219d6643bee1022b827e1b56
-Merge: 5499906 76a07f3
+Merge: 54999060 76a07f38
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Mon Mar 13 08:56:49 2017 +0100
 
@@ -541,7 +709,7 @@ Date:   Thu Sep 15 15:41:22 2016 -0400
     New version: 0.61.15.59
 
 commit e956b4310f3d0beb8fb9bd22b7e5671d95dc40bd
-Merge: e2d2aa8 3e7188d
+Merge: e2d2aa86 3e7188db
 Author: David Lehman <dlehman@redhat.com>
 Date:   Thu Sep 15 14:29:20 2016 -0400
 
@@ -579,7 +747,7 @@ Date:   Mon Sep 12 22:29:43 2016 -0400
     New version: 0.61.15.58
 
 commit 475adcade9b2f69d9b2b5c7abe8f9ffea627f034
-Merge: 1bc8dc1 dbe7a32
+Merge: 1bc8dc12 dbe7a321
 Author: David Lehman <dlehman@redhat.com>
 Date:   Mon Sep 12 11:06:23 2016 -0400
 
@@ -592,7 +760,7 @@ Date:   Wed Sep 7 11:06:37 2016 -0400
     New version: 0.61.15.57
 
 commit 3f9ede703ba7ce7d9b35f465a2f3c5b19d8d1aab
-Merge: 96166c2 efd4aa0
+Merge: 96166c29 efd4aa03
 Author: David Lehman <dlehman@redhat.com>
 Date:   Wed Sep 7 10:31:11 2016 -0400
 
@@ -663,14 +831,14 @@ Date:   Tue Aug 23 15:32:15 2016 -0400
     New version: 0.61.15.55
 
 commit c913a665eab31bd364f79efa812b257c42606679
-Merge: 91f6f56 db52ecd
+Merge: 91f6f566 db52ecda
 Author: David Lehman <dlehman@redhat.com>
 Date:   Mon Aug 22 14:14:42 2016 -0400
 
     Merge pull request #482 from dwlehman/md-partition-name-rhel7
 
 commit 91f6f56676334d2f589fc3fd7ffa33f5e8bd0687
-Merge: 2032b6e 00f258d
+Merge: 2032b6e5 00f258de
 Author: Radek Vykydal <rvykydal@redhat.com>
 Date:   Fri Aug 19 10:23:23 2016 +0200
 
@@ -685,14 +853,14 @@ Date:   Tue Aug 9 20:30:36 2016 -0400
     New version: 0.61.15.54
 
 commit cd2513829d97180a50fed6a93f22e09b5df8f247
-Merge: add1c61 8823a5d
+Merge: add1c61c 8823a5d3
 Author: David Lehman <dlehman@redhat.com>
 Date:   Thu Aug 4 14:31:36 2016 -0400
 
     Merge pull request #470 from kellinm/bz1242666_RHEL7
 
 commit add1c61c62c141349e505a26037a65ab92cb5a24
-Merge: 173e0a6 460d6f8
+Merge: 173e0a6c 460d6f8b
 Author: Samantha N. Bueno <snbueno@users.noreply.github.com>
 Date:   Wed Aug 3 13:35:16 2016 -0400
 
@@ -771,7 +939,7 @@ Date:   Wed Jul 6 16:40:21 2016 -0400
     New version: 0.61.15.52
 
 commit 9f815e018868b55732cdf71188d8bc7d07e19ba7
-Merge: 0e1f45d 40196d9
+Merge: 0e1f45d4 40196d9a
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Fri Jul 1 10:25:07 2016 +0200
 
@@ -815,7 +983,7 @@ Date:   Wed Mar 30 10:03:56 2016 +0200
     Resolves: rhbz#1261703
 
 commit e275942787c3960404650175dae9b1c83ea33333
-Merge: 1ffa845 460625d
+Merge: 1ffa8453 460625de
 Author: David Lehman <dlehman@redhat.com>
 Date:   Thu Jun 23 12:39:40 2016 -0400
 
@@ -874,7 +1042,7 @@ Date:   Tue Jun 14 16:05:41 2016 -0700
     New version: 0.61.15.50
 
 commit 2e81ecf71070ba2ce14135c3162620a6265f7e9c
-Merge: ca7dadc 5c5a271
+Merge: ca7dadc8 5c5a2718
 Author: David Lehman <dlehman@redhat.com>
 Date:   Tue Jun 14 16:18:56 2016 -0400
 
@@ -908,7 +1076,7 @@ Date:   Thu May 12 09:09:38 2016 -0700
     Resolves: rhbz#1330763
 
 commit 7151bbc556018f1385cbab9e734a7fd1339df0ea
-Merge: 55df623 cb7d4c4
+Merge: 55df623c cb7d4c45
 Author: Samantha N. Bueno <snbueno@users.noreply.github.com>
 Date:   Thu Jun 9 14:54:11 2016 -0400
 
@@ -954,7 +1122,7 @@ Date:   Fri May 27 14:58:15 2016 -0700
     Resolves: rhbz#1325707
 
 commit b61d003b03cea45165b3ef9ad37a23438c39c301
-Merge: 3e60250 a23a733
+Merge: 3e60250d a23a733e
 Author: David Lehman <dlehman@redhat.com>
 Date:   Tue May 31 15:20:08 2016 -0400
 
@@ -963,7 +1131,7 @@ Date:   Tue May 31 15:20:08 2016 -0400
     Improved handling of corrupt or otherwise unsupported disklabels (rhel7)
 
 commit 3e60250d3fa88169ab9687c32d222f8fd2385293
-Merge: 69a6bf3 6e5d9df
+Merge: 69a6bf32 6e5d9dfb
 Author: David Lehman <dlehman@redhat.com>
 Date:   Tue May 31 11:51:15 2016 -0400
 
@@ -976,7 +1144,7 @@ Date:   Fri May 27 17:20:44 2016 -0700
     New version: 0.61.15.47
 
 commit 3a36be62b7882275ee4f6d4e8b998a45a383e759
-Merge: 627b0ab 7bd5bcc
+Merge: 627b0abc 7bd5bcc0
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Fri May 27 15:38:54 2016 +0200
 
@@ -985,7 +1153,7 @@ Date:   Fri May 27 15:38:54 2016 +0200
     Remember VG name even if it seems to have no PVs
 
 commit 627b0abc2fc03030e7a5dad684f53d925a0bb1e4
-Merge: c21b765 52afc8c
+Merge: c21b765b 52afc8c6
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Fri May 27 11:38:11 2016 +0200
 
@@ -1093,7 +1261,7 @@ Date:   Mon May 23 10:24:04 2016 +0200
     Resolves: rhbz#1245038
 
 commit 523f15e34e37edc916c2135c3c3b43d1d0c0aefe
-Merge: 8ce221e 313b654
+Merge: 8ce221ee 313b6542
 Author: Samantha N. Bueno <snbueno@users.noreply.github.com>
 Date:   Fri May 20 15:46:40 2016 -0400
 
@@ -1102,7 +1270,7 @@ Date:   Fri May 20 15:46:40 2016 -0400
     Fix a typo when checking whether we're using an FBA DASD. (#1233438)
 
 commit 8ce221ee26f537b768d4a0ca42c9070b8da5caf1
-Merge: e71c3e2 ab2c486
+Merge: e71c3e20 ab2c4867
 Author: David Lehman <dlehman@redhat.com>
 Date:   Fri May 20 14:51:52 2016 -0400
 
@@ -1165,7 +1333,7 @@ Date:   Fri May 20 12:25:25 2016 -0400
     Resolves: rhbz#1192571
 
 commit e71c3e202f0673f399b35efc11973befe87acb67
-Merge: 7e7f885 033b942
+Merge: 7e7f8851 033b9426
 Author: David Lehman <dlehman@redhat.com>
 Date:   Fri May 20 10:43:43 2016 -0400
 
@@ -1174,7 +1342,7 @@ Date:   Fri May 20 10:43:43 2016 -0400
     Fix blivet constructor fs support check
 
 commit 7e7f8851f4f6669be325ac6e48fd5ace185135d6
-Merge: cc499a8 a7b50c8
+Merge: cc499a85 a7b50c8b
 Author: David Lehman <dlehman@redhat.com>
 Date:   Fri May 20 10:42:52 2016 -0400
 
@@ -1208,7 +1376,7 @@ Date:   Fri May 6 17:31:40 2016 -0700
     New version: 0.61.15.45
 
 commit 8001aa349e29e9c7ab11fa8d619e13cc234662ca
-Merge: f77d612 0ae3b31
+Merge: f77d6128 0ae3b31e
 Author: Vojtech Trefny <vtrefny@redhat.com>
 Date:   Fri May 6 15:35:01 2016 +0200
 
@@ -1333,7 +1501,7 @@ Date:   Thu Apr 14 16:56:10 2016 -0700
     New version: 0.61.15.42
 
 commit 58b023c86afa3b5847acdf61676e1854231992c5
-Merge: 763a5d6 7967bb0
+Merge: 763a5d64 7967bb05
 Author: Will Woods <wwoods@redhat.com>
 Date:   Wed Apr 13 13:44:24 2016 -0400
 
@@ -1342,7 +1510,7 @@ Date:   Wed Apr 13 13:44:24 2016 -0400
     suppress LVM autobackup during image installs (rhbz#1269144)
 
 commit 763a5d64a00f7a2e37d0ff9a9a4477e8572321a8
-Merge: c707791 1c93c45
+Merge: c7077919 1c93c456
 Author: Samantha N. Bueno <snbueno@users.noreply.github.com>
 Date:   Tue Apr 12 11:56:06 2016 -0400
 
@@ -1378,7 +1546,7 @@ Date:   Mon Apr 4 18:21:55 2016 -0400
     Resolves: rhbz#1031589
 
 commit 5a7eafc13553bd2d59a3078cfe20cb96b4c7e894
-Merge: 4a9a544 9e14543
+Merge: 4a9a5449 9e145431
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Thu Apr 7 15:41:49 2016 +0200
 
@@ -2223,7 +2391,7 @@ Date:   Fri Jul 31 17:23:04 2015 -0700
     New version: 0.61.15.14
 
 commit 95d11169896e2af7b2951f2359258dff53f2a33a
-Merge: ef804a7 55a5fec
+Merge: ef804a7f 55a5feca
 Author: Brian C. Lane <bcl@users.noreply.github.com>
 Date:   Fri Jul 31 16:56:17 2015 -0700
 
@@ -2786,7 +2954,7 @@ Date:   Mon Jun 8 17:08:29 2015 -0700
     New version: 0.61.15.4
 
 commit 7aca090a1a71c19f149f1aec4856549ce70c3d21
-Merge: af0329b b3fedc6
+Merge: af0329be b3fedc6a
 Author: mulkieran <mulkieran@users.noreply.github.com>
 Date:   Mon Jun 8 09:02:06 2015 -0400
 
@@ -2862,7 +3030,7 @@ Date:   Tue Apr 28 09:16:10 2015 -0400
     Signed-off-by: mulhern <amulhern@redhat.com>
 
 commit b8dabe480c3e81258e5f4c894918d00c38d96300
-Merge: 46c8f3e 7181468
+Merge: 46c8f3ee 7181468a
 Author: Vratislav Podzimek <vpodzime@users.noreply.github.com>
 Date:   Thu Jun 4 20:16:48 2015 +0200
 
@@ -2877,7 +3045,7 @@ Date:   Wed Jun 3 17:35:58 2015 -0700
     New version: 0.61.15.2
 
 commit dd56b7d0c704ace7cb265c203ef819bf8a840447
-Merge: 1a944d2 e633c16
+Merge: 1a944d22 e633c16d
 Author: mulkieran <mulkieran@users.noreply.github.com>
 Date:   Wed Jun 3 18:27:25 2015 -0400
 
@@ -3081,7 +3249,7 @@ Date:   Tue Sep 16 15:14:18 2014 +0200
     (cherry picked from commit 491cd3e92fe31a460344d96a5801d4fd75ddec6a)
 
 commit 1a944d220bcb0b2ea8b7e4048d5f39409f7d4355
-Merge: 321107a bff2198
+Merge: 321107ae bff2198e
 Author: David Lehman <dlehman@redhat.com>
 Date:   Tue Jun 2 11:44:03 2015 -0500
 
@@ -10037,7 +10205,7 @@ Date:   Mon Jan 27 12:05:28 2014 -0500
     the contents as-is.)
 
 commit 72d56389fbdf0be1111e0e7d197bcb6b0b37c79d
-Merge: 4a32b68 c81cbd0
+Merge: 4a32b685 c81cbd05
 Author: Brian C. Lane <bcl@redhat.com>
 Date:   Mon Jan 27 09:48:07 2014 -0800
 
@@ -13450,7 +13618,7 @@ Date:   Thu Feb 21 09:03:21 2013 -0800
     New version: 0.7
 
 commit 8d2310919d21c38805aa34a70b454d8fc7187a33
-Merge: da3f1bc 4a07c18
+Merge: da3f1bce 4a07c18a
 Author: Brian C. Lane <bcl@redhat.com>
 Date:   Thu Feb 21 08:44:56 2013 -0800
 

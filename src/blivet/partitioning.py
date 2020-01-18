@@ -54,7 +54,7 @@ def _getCandidateDisks(storage):
     """
     disks = []
     for disk in storage.partitioned:
-        if not disk.format.supported:
+        if not disk.format.supported or disk.protected:
             continue
 
         if storage.config.clearPartDisks and \
@@ -547,8 +547,6 @@ def getNextPartitionType(disk, no_primary=None):
     part_type = None
     extended = disk.getExtendedPartition()
     supports_extended = disk.supportsFeature(parted.DISK_TYPE_EXTENDED)
-    logical_count = len(disk.getLogicalPartitions())
-    max_logicals = disk.getMaxLogicalPartitions()
     primary_count = disk.primaryPartitionCount
 
     if primary_count < disk.maxPrimaryPartitionCount:
@@ -564,17 +562,17 @@ def getNextPartitionType(disk, no_primary=None):
                 # there is an extended and a free primary
                 if not no_primary:
                     part_type = parted.PARTITION_NORMAL
-                elif logical_count < max_logicals:
-                    # we have an extended with logical slots, so use one.
+                else:
+                    # we have an extended, so use it.
                     part_type = parted.PARTITION_LOGICAL
         else:
             # there are two or more primary slots left. use one unless we're
             # not supposed to make primaries.
             if not no_primary:
                 part_type = parted.PARTITION_NORMAL
-            elif extended and logical_count < max_logicals:
+            elif extended:
                 part_type = parted.PARTITION_LOGICAL
-    elif extended and logical_count < max_logicals:
+    elif extended:
         part_type = parted.PARTITION_LOGICAL
 
     return part_type
@@ -1802,7 +1800,7 @@ class VGChunk(Chunk):
                              "LVRequest"))
 
         if req.device.metaDataSize:
-            self.pool -= int(self.vg.align(req.device.metaDataSize, roundup=True) / self.vg.peSize)
+            self.pool -= 2 * int(self.vg.align(req.device.metaDataSize, roundup=True) / self.vg.peSize)
 
         if req.device.cached:
             # cached LV -> reserve space for the cache

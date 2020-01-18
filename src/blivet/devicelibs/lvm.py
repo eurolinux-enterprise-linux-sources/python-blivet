@@ -271,7 +271,7 @@ def pvcreate(device, data_alignment=None):
         raise LVMError("pvcreate failed for %s: %s" % (device, msg))
 
 def pvresize(device, size):
-    args = ["pvresize",
+    args = ["pvresize", "--yes",
             "--setphysicalvolumesize", ("%dm" % size.convertTo(spec="mib")),
             device]
 
@@ -725,7 +725,7 @@ def lvcreate_cached(vg_name, lv_name, lv_size, cache_data_size, cache_md_size,
     vg_lv_name = lambda lv_name: "%s/%s" % (vg_name, lv_name)
 
     # attach the cache pool to the LV
-    args = ["lvconvert", "--type", "cache", "--cachepool", vg_lv_name(lv_name+"_cache"), vg_lv_name(lv_name)]
+    args = ["lvconvert", "--yes", "--type", "cache", "--cachepool", vg_lv_name(lv_name+"_cache"), vg_lv_name(lv_name)]
     try:
         lvm(args)
     except LVMError as msg:
